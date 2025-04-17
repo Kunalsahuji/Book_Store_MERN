@@ -1,7 +1,8 @@
 const Book = require('../models/bookSchema');
 const ErrorHandler = require('../utils/ErrorHandler');
 const { catchAsyncErrors } = require('../middleware/catchAsyncErrors');
-
+const fs = require('fs');
+const path = require('path');
 // Create a new book
 exports.createBook = catchAsyncErrors(async (req, res, next) => {
     const { title, author, price, releaseDate, description } = req.body;
@@ -90,25 +91,32 @@ exports.updateBook = catchAsyncErrors(async (req, res, next) => {
     if (isNaN(validDate)) {
         return next(new ErrorHandler('Invalid release date', 400));
     }
-
-    const updatedData = {
-        title,
-        author,
-        price,
-        releaseDate,
-        description
-    };
-
-    if (image) updatedData.image = image;
-
-    const book = await Book.findByIdAndUpdate(req.params.id, updatedData, {
-        new: true,
-        runValidators: true
-    });
-
+    // Find existing book
+    const book = await Book.findById(req.params.id);
     if (!book) {
         return next(new ErrorHandler('Book not found', 404));
     }
+    // Delete old image if a new one is uploaded
+    if (image && book.image) {
+        const oldImagePath = path.join(__dirname, "..", book.image);
+        fs.unlink(oldImagePath, (err) => {
+            if (err) {
+                console.error("Failed to delete old image:", err);
+            } else {
+                console.log("Old image deleted:", oldImagePath);
+            }
+        })
+    }
+    // Update book details
+    book.title = title;
+    book.author = author;
+    book.price = price;
+    book.releaseDate = releaseDate;
+    book.description = description;
+    if (image) {
+        book.image = image;
+    }
+    await book.save();
 
     res.status(200).json({
         message: 'Book updated successfully',
@@ -118,12 +126,23 @@ exports.updateBook = catchAsyncErrors(async (req, res, next) => {
 
 // Delete a book
 exports.deleteBook = catchAsyncErrors(async (req, res, next) => {
-    const book = await Book.findByIdAndDelete(req.params.id);
+    const book = await Book.findById(req.params.id);
 
     if (!book) {
         return next(new ErrorHandler('Book not found', 404));
     }
+    if (book.image) {
+        const imagePath = path.join(__dirname, "..", book.image);
+        fs.unlink(imagePath, (err) => {
+            if (err) {
+                console.error("Failed to delete image:", err);
+            } else {
+                console.log("Image deleted:", imagePath);
+            }
+        });
+    }
 
+    await Book.findByIdAndDelete(req.params.id);
     res.status(200).json({
         message: 'Book deleted successfully'
     });

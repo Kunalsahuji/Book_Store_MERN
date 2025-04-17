@@ -32,7 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Static files
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use("/uploads", express.static("uploads"));
 
 // Routes
 app.use('/api/books', bookRouter);
