@@ -31,10 +31,6 @@ app.use(express.urlencoded({ extended: true }));
 // Cookie parser
 app.use(cookieParser());
 
-// Static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// app.use("/uploads", express.static("uploads"));
-
 // Routes
 app.use('/api/books', bookRouter);
 
@@ -49,5 +45,5 @@ app.use(ErrorMiddleware);
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
+    // console.log(`✅ Server running on port ${PORT}`);
 });

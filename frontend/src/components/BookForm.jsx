@@ -27,13 +27,12 @@ export default function BookForm({ onSuccess }) {
         try {
             await createBook(formData);
             toast.success("Book added successfully!");
-            // reset();
-            // setFile(null);
-            // if (onSuccess) onSuccess();
-            navigate("/"); // ⬅️ navigate to homepage after success
+            navigate("/");
         } catch (err) {
+            console.error("Error creating book:", err.response?.data || err.message);
             toast.error("Failed to add book.");
         }
+
     };
 
     return (
@@ -71,18 +70,20 @@ export default function BookForm({ onSuccess }) {
             {errors.releaseDate && <p className="text-red-500 text-sm">{errors.releaseDate.message}</p>}
 
             <textarea
-                {...register("description")}
+                {...register("description", { required: "Description is required" })}
                 placeholder="Description"
                 className="input"
             />
+            {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
 
             <input
                 type="file"
                 accept="image/*"
+                {...register("image", { required: "Image is required" })}
                 onChange={(e) => setFile(e.target.files[0])}
                 className="input"
             />
-
+            {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
             <button
                 type="submit"
                 disabled={isSubmitting}

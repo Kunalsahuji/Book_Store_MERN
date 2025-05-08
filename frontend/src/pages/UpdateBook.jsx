@@ -1,105 +1,3 @@
-// import { useState, useEffect } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import { getBook, updateBook } from "../services/bookService";
-// import toast from "react-hot-toast";
-
-// export default function UpdateBook() {
-//     const { id } = useParams();
-//     const navigate = useNavigate();
-
-//     const [formData, setFormData] = useState({
-//         title: "",
-//         author: "",
-//         price: "",
-//         releaseDate: "",
-//         description: "",
-//     });
-
-//     useEffect(() => {
-//         getBook(id)
-//             .then((res) => {
-//                 const book = res.data;
-//                 setFormData({
-//                     title: book.title,
-//                     author: book.author,
-//                     price: book.price,
-//                     releaseDate: book.releaseDate.slice(0, 10),
-//                     description: book.description || "",
-//                 });
-//             })
-//             .catch((err) => {
-//                 console.error(err);
-//                 toast.error("Failed to fetch book.");
-//             });
-//     }, [id]);
-
-//     const handleChange = (e) =>
-//         setFormData({ ...formData, [e.target.name]: e.target.value });
-
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-//         try {
-//             await updateBook(id, formData);
-//             toast.success("Book updated successfully!");
-//             navigate(`/book/${id}`);
-//         } catch (err) {
-//             console.error(err);
-//             toast.error("Failed to update book.");
-//         }
-//     };
-
-//     return (
-//         <div className="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md mt-8">
-//             <h1 className="text-2xl font-bold mb-4">Update Book</h1>
-//             <form onSubmit={handleSubmit} className="space-y-4">
-//                 <input
-//                     type="text"
-//                     name="title"
-//                     placeholder="Title"
-//                     value={formData.title}
-//                     onChange={handleChange}
-//                     className="w-full p-2 border rounded"
-//                 />
-//                 <input
-//                     type="text"
-//                     name="author"
-//                     placeholder="Author"
-//                     value={formData.author}
-//                     onChange={handleChange}
-//                     className="w-full p-2 border rounded"
-//                 />
-//                 <input
-//                     type="number"
-//                     name="price"
-//                     placeholder="Price"
-//                     value={formData.price}
-//                     onChange={handleChange}
-//                     className="w-full p-2 border rounded"
-//                 />
-//                 <input
-//                     type="date"
-//                     name="releaseDate"
-//                     value={formData.releaseDate}
-//                     onChange={handleChange}
-//                     className="w-full p-2 border rounded"
-//                 />
-//                 <textarea
-//                     name="description"
-//                     placeholder="Description"
-//                     value={formData.description}
-//                     onChange={handleChange}
-//                     className="w-full p-2 border rounded"
-//                 />
-//                 <button
-//                     type="submit"
-//                     className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700"
-//                 >
-//                     Update Book
-//                 </button>
-//             </form>
-//         </div>
-//     );
-// }
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { getBook, updateBook } from "../services/bookService";
@@ -195,10 +93,19 @@ export default function UpdateBook() {
                 />
             </div>
 
+            {/* Show existing image if no new file selected */}
             {existingImage && !file && (
                 <div className="mt-2">
                     <p className="text-gray-500 text-sm mb-1">Current Image:</p>
-                    <img src={`http://localhost:5000/${existingImage}`} alt="Current" className="h-32 object-cover rounded" />
+                    <img src={existingImage} alt="Current" className="h-32 object-cover rounded" />
+                </div>
+            )}
+
+            {/* Show preview if new image selected */}
+            {file && (
+                <div className="mt-2">
+                    <p className="text-gray-500 text-sm mb-1">New Image Preview:</p>
+                    <img src={URL.createObjectURL(file)} alt="Preview" className="h-32 object-cover rounded" />
                 </div>
             )}
 

@@ -5,7 +5,7 @@ export default function BookCard({ book }) {
     <div className="bg-white p-4 rounded-xl shadow hover:shadow-md transition">
       {book.image && (
         <img
-          src={`http://localhost:5000/${book.image}`}
+          src={`${book.image}`}
           alt={book.title}
           className="h-48 w-full object-cover rounded"
         />

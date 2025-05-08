@@ -11,7 +11,6 @@ export default function BookDetails() {
   useEffect(() => {
     getBook(id)
       .then((res) => {
-        console.log("API Response:", res.data);
         setBook(res.data);
       })
       .catch((err) => {
@@ -41,7 +40,7 @@ export default function BookDetails() {
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-2xl shadow-md mt-8">
       {book.image && (
         <img
-          src={`http://localhost:5000/${book.image}`}
+          src={`${book.image}`}
           className="w-full h-96 object-cover rounded-xl mb-4"
           alt={book.title}
         />
